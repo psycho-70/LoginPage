@@ -239,7 +239,7 @@ function App() {
           </Link>
         </Typography>
       </Grid>
-      {!matches && <img src="./center.png" width={400} height={400} alt="" />}
+      {!matches && <img src="./center.png" width={600} height={600} alt="" />}
     </Grid>
   );
 }

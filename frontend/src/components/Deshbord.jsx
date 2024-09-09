@@ -1,16 +1,10 @@
-import React, { useState } from 'react';
-import {
-  Box,
-  TextField,
-  Button,
-  Typography,
-  Grid,
-  Avatar,
-  IconButton
-} from '@mui/material';
+import React, { useState, useContext } from 'react';
+import { Box, TextField, Button, Typography, Grid, Avatar, IconButton } from '@mui/material';
 import PhotoCamera from '@mui/icons-material/PhotoCamera';
+import { DarkModeContext } from '../appContext'; // Adjust import path as necessary
 
 const Dashboard = () => {
+  const { darkMode } = useContext(DarkModeContext);
   const [userData, setUserData] = useState({
     firstName: '',
     lastName: '',
@@ -43,21 +37,29 @@ const Dashboard = () => {
   };
 
   return (
-    <Grid 
+    <Grid
       container
       justifyContent="center"
       alignItems="center"
       p={2}
-      sx={{ minHeight: '100vh' }}
+      sx={{ 
+        minHeight: '100vh',
+        backgroundColor: darkMode ? '#121212' : '#f7f4f3',
+        transition: 'background-color 0.3s',
+        padding: '10px',
+      }}
     >
-      <Box 
+      <Box
         color={'ActiveBorder'}
         sx={{ 
-          width: '80vh', 
-          p: 4, 
-          boxShadow: 3, 
-          borderRadius: 3, 
-          backgroundColor: '#f9f9f9'
+          width: '80vh',
+          p: 4,
+          boxShadow: 3,
+          borderRadius: 3,
+          bgcolor: darkMode ? '#1e1e1e' : '#f7f4f3',
+          borderRadius: '10px',
+          boxShadow: darkMode ? '0px 0px 10px rgba(255, 255, 255, 0.1)' : '0px 0px 10px rgba(0, 0, 0, 0.1)',
+          color: darkMode ? '#f7f4f3' : '#000',
         }}
       >
         <Typography variant="h4" gutterBottom align="center">
@@ -95,6 +97,12 @@ const Dashboard = () => {
             value={userData.firstName}
             onChange={handleInputChange}
             sx={{ mb: 2 }}
+            InputProps={{
+              style: { color: darkMode ? '#fff' : '#000' },
+            }}
+            InputLabelProps={{
+              style: { color: darkMode ? '#fff' : '#000' },
+            }}
           />
           <TextField
             label="Last Name"
@@ -103,6 +111,12 @@ const Dashboard = () => {
             value={userData.lastName}
             onChange={handleInputChange}
             sx={{ mb: 2 }}
+            InputProps={{
+              style: { color: darkMode ? '#fff' : '#000' },
+            }}
+            InputLabelProps={{
+              style: { color: darkMode ? '#fff' : '#000' },
+            }}
           />
           <TextField
             label="Email"
@@ -111,6 +125,12 @@ const Dashboard = () => {
             value={userData.email}
             onChange={handleInputChange}
             sx={{ mb: 2 }}
+            InputProps={{
+              style: { color: darkMode ? '#fff' : '#000' },
+            }}
+            InputLabelProps={{
+              style: { color: darkMode ? '#fff' : '#000' },
+            }}
           />
           <Button
             variant="contained"
@@ -136,6 +156,12 @@ const Dashboard = () => {
             value={userData.password}
             onChange={handleInputChange}
             sx={{ mb: 2 }}
+            InputProps={{
+              style: { color: darkMode ? '#fff' : '#000' },
+            }}
+            InputLabelProps={{
+              style: { color: darkMode ? '#fff' : '#000' },
+            }}
           />
           <Button
             variant="contained"
