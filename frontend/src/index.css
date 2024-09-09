@@ -1,0 +1,54 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+/* index.css */
+*{
+    padding: 0px;
+    margin: 0px;
+    box-sizing: border-box;
+}
+body {
+    transition: background-color 0.3s;
+  }
+  
+  body.dark {
+    background-color: #555a63; /* Dark mode background */
+    color: #f7fafc; /* Dark mode text color */
+  }
+  
+ /* index.css */
+
+.navbar {
+
+    
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background-color 0.3s ease-in-out;
+  }
+  
+  .navbar-content {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: space-around;
+    padding: 16px;
+  }
+  
+  .navbar-logo {
+    height: 40px;
+  }
+  
+  .light-mode {
+    background-color: #F7EFE5; /* Equivalent to bg-red-400 */
+  }
+  
+  .dark-mode {
+    background-color: #333; /* Dark mode color */
+  }
+  
+  
