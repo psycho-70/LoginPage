@@ -1,11 +1,12 @@
-import React, { useContext } from 'react';
-import { DarkModeContext } from '../appContext'; // Import the corrected context
+import React, { useContext, useState } from 'react';
+import { DarkModeContext , UserContext } from '../appContext'; // Import the dark mode context
 import { styled } from '@mui/material/styles';
 import Switch from '@mui/material/Switch';
-import { IconButton, Tooltip } from '@mui/material';
+import { IconButton,Typography, Tooltip, Drawer, List, ListItem, ListItemText } from '@mui/material';
 import AccountCircle from '@mui/icons-material/AccountCircle';
+import MenuIcon from '@mui/icons-material/Menu';
 import { Link } from 'react-router-dom'; // Import Link from React Router
-
+import useMediaQuery from '@mui/material/useMediaQuery';
 // Material UI Switch for Dark Mode
 const MaterialUISwitch = styled(Switch)(({ theme }) => ({
   width: 62,
@@ -56,33 +57,94 @@ const MaterialUISwitch = styled(Switch)(({ theme }) => ({
 
 export default function Navbar() {
   const { darkMode, toggleDarkMode } = useContext(DarkModeContext); // Access dark mode context
+  const { userDataform } = useContext(UserContext); // Access user context to check login status
+  const [drawerOpen, setDrawerOpen] = useState(false); // State to handle drawer open/close
+  const isMobile = useMediaQuery('(max-width:600px)'); // Detect mobile screens
+
+
+  const capitalizeFirstLetter = (name) => {
+    if (!name) return 'Guest';
+    return name.charAt(0).toUpperCase() + name.slice(1);
+  };
+
+  const toggleDrawer = (open) => () => {
+    setDrawerOpen(open);
+  };
+
+  // Dark mode drawer styles
+  const drawerStyle = {
+    backgroundColor: darkMode ? '#333' : '#fff', // Dark or light background
+    color: darkMode ? '#fff' : '#000',           // Dark or light text color
+    width: '250px',
+    height: '100%',
+  };
 
   return (
     <nav className={`navbar ${darkMode ? 'dark-mode' : 'light-mode'}`}>
-      <div className="navbar-content" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+      <div className="navbar-content" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         {/* Logo */}
-        <Link to="/">
-          <img src="./logo.png" alt="Logo" className="navbar-logo" style={{ height: '50px' }} />
-        </Link>
+        <img src="./logo.png" alt="Logo" className="navbar-logo" style={{ height: '50px' }} />
 
-        {/* Right Side: Dark Mode Toggle and Profile Button */}
-        <div style={{ display: 'flex', alignItems: 'center' }}>
-          {/* Dark Mode Toggle */}
-          <MaterialUISwitch checked={darkMode} onChange={toggleDarkMode} />
-
-          {/* Profile Button */}
-          <Tooltip title="Profile">
-            <IconButton
-              component={Link}
-              to="/dashboard"
-              color="inherit"
-              aria-label="profile"
-              sx={{ ml: 2 }}
-            >
-              <AccountCircle />
+        {/* Mobile Menu Icon */}
+        {isMobile ? (
+          <>
+            <IconButton onClick={toggleDrawer(true)} color="inherit">
+              <MenuIcon />
             </IconButton>
-          </Tooltip>
-        </div>
+
+            {/* Drawer for mobile view */}
+            <Drawer anchor="left" open={drawerOpen} onClose={toggleDrawer(false)}>
+              <div style={drawerStyle}>
+                <List>
+                  <ListItem>
+                    {/* Dark Mode Toggle inside Drawer */}
+                    <MaterialUISwitch checked={darkMode} onChange={toggleDarkMode} />
+                    <ListItemText primary="Dark Mode" />
+                  </ListItem>
+                  {/* Show Profile button only if the user is logged in */}
+                    <ListItem>
+                       <Typography variant="h6" sx={{ ml: 2 }} gutterBottom align="center">
+  {capitalizeFirstLetter (userDataform.fullName) }
+</Typography>
+                    </ListItem>
+                  {userDataform && (
+                    <ListItem component={Link} to="/dashboard">
+                      <Tooltip title="Profile">
+                        <IconButton color="success" aria-label="profile">
+                          <AccountCircle />
+                        </IconButton>
+                      </Tooltip>
+                    </ListItem>
+                  )}
+                </List>
+              </div>
+            </Drawer>
+          </>
+        ) : (
+          // Desktop view (default behavior)
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            {/* Dark Mode Toggle */}
+            <MaterialUISwitch checked={darkMode} onChange={toggleDarkMode} />
+          
+           <Typography variant="h6" sx={{ ml: 2 }} gutterBottom align="center">
+  {capitalizeFirstLetter (userDataform.fullName)}
+</Typography>
+            {/* Show Profile button only if the user is logged in */}
+            {userDataform && (
+              <Tooltip title="Profile">
+                <IconButton
+                  component={Link}
+                  to="/dashboard"
+                  color="inherit"
+                  aria-label="profile"
+                  // sx={{ ml: 2 }}
+                >
+                  <AccountCircle />
+                </IconButton>
+              </Tooltip>
+            )}
+          </div>
+        )}
       </div>
     </nav>
   );

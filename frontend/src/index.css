@@ -2,7 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
-
+@media only screen and (mix-width: 768px) {
+    .navbar-content {
+        
+        width: 100%;
+       padding: 0px;
+      }
+}
 /* index.css */
 *{
     padding: 0px;
@@ -22,7 +28,6 @@ body {
 
 .navbar {
 
-    
     padding: 0;
     margin: 0;
     display: flex;
@@ -34,11 +39,14 @@ body {
   .navbar-content {
     display: flex;
     width: 100%;
+    margin:auto;
     align-items: center;
     justify-content: space-around;
     padding: 16px;
   }
-  
+  .md{
+width: 70vw;
+  }
   .navbar-logo {
     height: 40px;
   }

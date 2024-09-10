@@ -1,28 +1,21 @@
 import React, { useState, useContext } from 'react';
+import { Link, useNavigate } from 'react-router-dom'; // Import useNavigate for redirection
 import {
-  TextField,
-  Button,
-  Typography,
-  Grid,
-  Link,
-  Box,
-  Checkbox,
-  FormControlLabel,
-  IconButton,
-  useTheme,
-  useMediaQuery,
+  TextField, Button, Typography, Grid, Link as MuiLink, Box, Checkbox, FormControlLabel, IconButton, useTheme, useMediaQuery
 } from '@mui/material';
-import Visibility from '@mui/icons-material/Visibility';
-import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
+import { useSnackbar } from 'notistack'; // Import Notistack for notifications
 import { DarkModeContext } from '../appContext'; // Adjust import path as necessary
 
-function App() {
+function LoginPage() {
   const { darkMode } = useContext(DarkModeContext);
-  const [email, setEmail] = React.useState('');
-  const [password, setPassword] = React.useState('');
-  const [fullName, setFullName] = React.useState('');
-  const [address, setAddress] = React.useState('');
-  const [showPassword, setShowPassword] = React.useState(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [fullName, setFullName] = useState('');
+  const [address, setAddress] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const { enqueueSnackbar } = useSnackbar(); // Notistack hook for notifications
+  const navigate = useNavigate(); // React Router hook for navigation
 
   const theme = useTheme();
   const matches = useMediaQuery(theme.breakpoints.down('md'));
@@ -30,7 +23,7 @@ function App() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('http://localhost:3001/login', {
+      const response = await fetch('http://localhost:3001/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -45,10 +38,23 @@ function App() {
       const data = await response.json();
       console.log('Login successful:', data);
 
-      // Optionally, redirect the user to a protected route or home page
+      enqueueSnackbar('Login successful!', { variant: 'success' }); // Show success notification
+
+      // Store the token (if provided) in localStorage
+      localStorage.setItem('token', data.token);
+
+      // Clear the form fields after submission
+      setEmail('');
+      setPassword('');
+      setFullName('');
+      setAddress('');
+
+      // Redirect to dashboard after successful login
+      navigate('/dashboard', { state: { email, fullName, address } });
+
     } catch (error) {
       console.error('Error:', error);
-      // Handle login errors here (e.g., display an error message)
+      enqueueSnackbar('Login failed! Please check your credentials and try again.', { variant: 'error' }); // Show error notification
     }
   };
 
@@ -61,7 +67,7 @@ function App() {
       sx={{
         backgroundColor: darkMode ? '#121212' : '#f7f4f3',
         transition: 'background-color 0.3s',
-        padding:"10px"
+        padding: "10px"
       }}
     >
       <Grid
@@ -207,9 +213,9 @@ function App() {
             sx={{ mt: 2, color: darkMode ? '#f7f4f3' : '#000' }}
           />
           <Box textAlign="right" sx={{ mt: 2 }}>
-            <Link href="#" variant="body2" sx={{ color: darkMode ? '#90caf9' : '#1e88e5' }}>
+            <MuiLink component={Link} to="/forgot-password" variant="body2" sx={{ color: darkMode ? '#90caf9' : '#1e88e5' }}>
               Forgot your password?
-            </Link>
+            </MuiLink>
           </Box>
 
           <Button
@@ -233,15 +239,15 @@ function App() {
         </form>
 
         <Typography variant="body2" align="center">
-          Don't have an account?{' '}
-          <Link href="#" variant="body2" underline="none" sx={{ color: darkMode ? '#90caf9' : '#1e88e5' }}>
-            Register here
-          </Link>
-        </Typography>
+        Don't have an account?{' '}
+        <MuiLink component={Link} to="/login" variant="body2" underline="none" sx={{ color: darkMode ? '#90caf9' : '#1e88e5' }}>
+          Register here
+        </MuiLink>
+      </Typography>
       </Grid>
       {!matches && <img src="./center.png" width={600} height={600} alt="" />}
     </Grid>
   );
 }
 
-export default App;
+export default LoginPage;
