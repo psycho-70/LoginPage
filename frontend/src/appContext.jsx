@@ -33,36 +33,44 @@ export const UserProvider = ({ children }) => {
   const [userDataform, setUserDataform] = useState({});
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
+  const fetchUserData = async () => {
     const token = localStorage.getItem('token'); // Get the JWT token from local storage
-    const fetchUserData = async () => {
-      try {
-        const response = await fetch('http://localhost:3001/user', {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`, // Add the JWT token to the Authorization header
-          },
-        });
+    if (!token) return; // If there's no token, return early
 
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
+    try {
+      const response = await fetch('http://localhost:3001/user', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`, // Add the JWT token to the Authorization header
+        },
+      });
 
-        const data = await response.json();
-        setUserDataform(data); // Update user data state
-        setLoading(false); // Set loading to false
-      } catch (error) {
-        console.error('Error fetching user data:', error);
-        setLoading(false);
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
       }
-    };
 
-    fetchUserData();
+      const data = await response.json();
+      setUserDataform(data); // Update user data state
+      setLoading(false); // Set loading to false
+    } catch (error) {
+      console.error('Error fetching user data:', error);
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchUserData(); // Fetch user data on component mount
   }, []);
 
+  const handleLogout = () => {
+    setUserDataform({});
+    setLoading(true);
+    localStorage.removeItem('token');
+  };
+
   return (
-    <UserContext.Provider value={{ userDataform, loading }}>
+    <UserContext.Provider value={{ userDataform, handleLogout, loading, fetchUserData }}>
       <DarkModeProvider>{children}</DarkModeProvider>
     </UserContext.Provider>
   );

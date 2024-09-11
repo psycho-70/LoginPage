@@ -57,13 +57,17 @@ const MaterialUISwitch = styled(Switch)(({ theme }) => ({
 
 export default function Navbar() {
   const { darkMode, toggleDarkMode } = useContext(DarkModeContext); // Access dark mode context
-  const { userDataform } = useContext(UserContext); // Access user context to check login status
+  const { userDataform, handleLogout, loading } = useContext(UserContext); // Access user context to check login status
   const [drawerOpen, setDrawerOpen] = useState(false); // State to handle drawer open/close
   const isMobile = useMediaQuery('(max-width:600px)'); // Detect mobile screens
 
+  const handleLogoutClick = () => {
+    handleLogout(); // Call the logout function from UserContext
+    navigate('/loginform'); // Redirect to login page
+  };
 
   const capitalizeFirstLetter = (name) => {
-    if (!name) return 'Guest';
+    if (!name) return ' ';
     return name.charAt(0).toUpperCase() + name.slice(1);
   };
 
@@ -101,19 +105,26 @@ export default function Navbar() {
                     <MaterialUISwitch checked={darkMode} onChange={toggleDarkMode} />
                     <ListItemText primary="Dark Mode" />
                   </ListItem>
-                  {/* Show Profile button only if the user is logged in */}
+
+                  {/* Conditionally render user profile if logged in */}
+                  {userDataform.fullName ? (
+                    <>
+                      <ListItem>
+                        <Typography variant="h6" sx={{ ml: 2 }} gutterBottom align="center">
+                          {capitalizeFirstLetter(userDataform.fullName)}
+                        </Typography>
+                      </ListItem>
+                      <ListItem component={Link} to="/dashboard">
+                        <Tooltip title="Profile">
+                          <IconButton color="success" aria-label="profile">
+                            <AccountCircle />
+                          </IconButton>
+                        </Tooltip>
+                      </ListItem>
+                    </>
+                  ) : (
                     <ListItem>
-                       <Typography variant="h6" sx={{ ml: 2 }} gutterBottom align="center">
-  {capitalizeFirstLetter (userDataform.fullName) }
-</Typography>
-                    </ListItem>
-                  {userDataform && (
-                    <ListItem component={Link} to="/dashboard">
-                      <Tooltip title="Profile">
-                        <IconButton color="success" aria-label="profile">
-                          <AccountCircle />
-                        </IconButton>
-                      </Tooltip>
+                     
                     </ListItem>
                   )}
                 </List>
@@ -126,18 +137,18 @@ export default function Navbar() {
             {/* Dark Mode Toggle */}
             <MaterialUISwitch checked={darkMode} onChange={toggleDarkMode} />
           
-           <Typography variant="h6" sx={{ ml: 2 }} gutterBottom align="center">
-  {capitalizeFirstLetter (userDataform.fullName)}
-</Typography>
+            <Typography variant="h6" sx={{ ml: 2 }} gutterBottom align="center">
+              {userDataform.fullName ? capitalizeFirstLetter(userDataform.fullName) : ''}
+            </Typography>
+
             {/* Show Profile button only if the user is logged in */}
-            {userDataform && (
+            {userDataform.fullName && (
               <Tooltip title="Profile">
                 <IconButton
                   component={Link}
                   to="/dashboard"
                   color="inherit"
                   aria-label="profile"
-                  // sx={{ ml: 2 }}
                 >
                   <AccountCircle />
                 </IconButton>

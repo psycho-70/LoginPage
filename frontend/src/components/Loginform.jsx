@@ -5,10 +5,13 @@ import {
 } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { useSnackbar } from 'notistack'; // Import Notistack for notifications
-import { DarkModeContext } from '../appContext'; // Adjust import path as necessary
+import { DarkModeContext, UserContext} from '../appContext'; // Adjust import path as necessary
 
 function LoginPage() {
   const { darkMode } = useContext(DarkModeContext);
+  
+  const { fetchUserData } = useContext(UserContext); // Get fetchUserData from UserContext
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [fullName, setFullName] = useState('');
@@ -42,7 +45,7 @@ function LoginPage() {
 
       // Store the token (if provided) in localStorage
       localStorage.setItem('token', data.token);
-
+      fetchUserData(); // Fetch user data immediately after login
       // Clear the form fields after submission
       setEmail('');
       setPassword('');

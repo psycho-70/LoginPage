@@ -6,6 +6,7 @@ import { UserProvider } from './appContext'; // Import the UserProvider which wr
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
+    
     <UserProvider> {/* Wrap the entire app with UserProvider */}
       <App />
     </UserProvider>

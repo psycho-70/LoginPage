@@ -1,11 +1,14 @@
 import React, { useState, useEffect, useContext } from 'react';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
+import { jwtDecode } from 'jwt-decode';
 import { Box, TextField, Button, Typography, Grid } from '@mui/material';
 import { DarkModeContext, UserContext } from '../appContext';
-import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 const Dashboard = () => {
+  const navigate = useNavigate(); // useNavigate to redirect to login
   const { darkMode } = useContext(DarkModeContext); // Use DarkModeContext
-  const { userDataform, loading } = useContext(UserContext); // Use UserContext
+  const { userDataform, handleLogout, loading } = useContext(UserContext); // Use UserContext
 
   const [userData, setUserData] = useState({
     fullName: '',
@@ -15,7 +18,32 @@ const Dashboard = () => {
   });
 
   const [showProfile, setShowProfile] = useState(false); // For toggling the profile form
-  const navigate = useNavigate();
+
+  // Check token validity on component mount
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    
+    if (!token) {
+      // No token found, redirect to login page
+      navigate('/loginform');
+    } else {
+      try {
+        // Decode token to check expiration
+        const decodedToken = jwtDecode(token);
+        const currentTime = Date.now() / 1000; // Current time in seconds
+
+        if (decodedToken.exp < currentTime) {
+          // Token expired, redirect to login page
+          localStorage.removeItem('token');
+          navigate('/loginform');
+        }
+      } catch (error) {
+        console.error('Error decoding token:', error);
+        // If there is an error decoding the token, redirect to login page
+        navigate('/loginform');
+      }
+    }
+  }, [navigate]);
 
   useEffect(() => {
     if (!loading && userDataform) {
@@ -38,7 +66,7 @@ const Dashboard = () => {
 
   const handleSubmit = async () => {
     try {
-      const token = localStorage.getItem('token'); 
+      const token = localStorage.getItem('token');
       const response = await fetch('http://localhost:3001/user', {
         method: 'PUT',
         headers: {
@@ -52,21 +80,16 @@ const Dashboard = () => {
           password: userData.password, // Send password only if it needs to be updated
         }),
       });
-  
+
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
-  
+
       const data = await response.json();
       console.log('User profile updated:', data);
     } catch (error) {
       console.error('Error updating user profile:', error);
     }
-  };
-
-  const handleLogout = () => {
-    localStorage.removeItem('token');
-    navigate('/'); 
   };
 
   return (
@@ -112,7 +135,7 @@ const Dashboard = () => {
             variant="contained"
             color="primary"
             fullWidth
-            onClick={() => setShowProfile(!showProfile)} 
+            onClick={() => setShowProfile(!showProfile)}
             sx={{ mb: 2 }}
           >
             {showProfile ? 'Hide Profile' : 'Update Profile'}
@@ -195,8 +218,11 @@ const Dashboard = () => {
             fullWidth
             onClick={handleLogout}
           >
-            Logout
+            <Link to="/loginform" style={{ color: 'inherit', textDecoration: 'none' }}>
+              Logout
+            </Link>
           </Button>
+
         </Box>
       </Grid>
     </>
