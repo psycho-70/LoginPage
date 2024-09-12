@@ -13,17 +13,19 @@ This project is a login system built with React.js on the frontend and Node.js w
 - **Backend (Node.js & Express)**
   - Uses JWT for authentication and Mongoose for MongoDB operations.
 ## UI Picture
-<!-- Image 1: Login Form -->
-<img src="public/1.PNG" alt="Login Form" width="300">
+<div style="display: flex; flex-wrap: wrap; gap: 10px;">
+  <!-- Image 1: Login Form -->
+  <img src="public/1.PNG" alt="Login Form" width="300">
 
-<!-- Image 2: Login Page -->
-<img src="public/2.PNG" alt="Login Page" width="300">
+  <!-- Image 2: Login Page -->
+  <img src="public/2.PNG" alt="Login Page" width="300">
 
-<!-- Image 3: Dashboard -->
-<img src="public/3.PNG" alt="Dashboard" width="300">
+  <!-- Image 3: Dashboard -->
+  <img src="public/3.PNG" alt="Dashboard" width="300">
 
-<!-- Image 4: Dark Mode -->
-<img src="public/4.PNG" alt="Dark Mode" width="300">
+  <!-- Image 4: Dark Mode -->
+  <img src="public/4.PNG" alt="Dark Mode" width="300">
+</div>
 
 ## Dependencies
 ```bash
