@@ -14,9 +14,11 @@ This project is a login system built with React.js on the frontend and Node.js w
   - Uses JWT for authentication and Mongoose for MongoDB operations.
 
 ## Dependencies
+```bash
 npm install @emotion/react@^11.13.3 @emotion/styled@^11.13.0 @mui/icons-material@^6.0.2 @mui/material@^6.0.2 axios@^1.7.7 jwt-decode@^4.0.0 notistack@^3.0.1 react@^18.3.1 react-dom@^18.3.1 react-router-dom@^6.26.2
 
 ### Backend
+```bash
 npm install bcrypt@^5.1.1 cors@^2.8.5 express@^4.19.2 jsonwebtoken@^9.0.2 mongoose@^8.6.1
 
 To install the backend dependencies, use:
