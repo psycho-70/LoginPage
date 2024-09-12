@@ -3,7 +3,7 @@ import cors from 'cors';
 import jwt from 'jsonwebtoken';
 import mongoose from 'mongoose';
 import bcrypt from 'bcrypt';
-import User from './model/User.js';
+import User from '../model/User.js';
 
 const app = express();
 const port = 3001;
@@ -40,7 +40,7 @@ const verifyToken = (req, res, next) => {
   });
 };
 
-// Register a new user
+
 // Register a new user
 app.post('/register', async (req, res) => {
   const { fullName, email, password, address } = req.body;
@@ -126,6 +126,9 @@ app.put('/user', verifyToken, async (req, res) => {
     res.status(500).json({ message: 'Error updating user profile' });
   }
 });
+
+
+
 
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);

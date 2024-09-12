@@ -5,11 +5,10 @@ import {
 } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { useSnackbar } from 'notistack'; // Import Notistack for notifications
-import { DarkModeContext, UserContext} from '../appContext'; // Adjust import path as necessary
+import { DarkModeContext, UserContext } from '../appContext'; // Adjust import path as necessary
 
 function LoginPage() {
   const { darkMode } = useContext(DarkModeContext);
-  
   const { fetchUserData } = useContext(UserContext); // Get fetchUserData from UserContext
 
   const [email, setEmail] = useState('');
@@ -20,11 +19,22 @@ function LoginPage() {
   const { enqueueSnackbar } = useSnackbar(); // Notistack hook for notifications
   const navigate = useNavigate(); // React Router hook for navigation
 
-  const theme = useTheme();
-  const matches = useMediaQuery(theme.breakpoints.down('md'));
-
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      enqueueSnackbar('Please enter a valid email address!', { variant: 'error' });
+      return;
+    }
+
+    // Password validation
+    if (password.length < 8) {
+      enqueueSnackbar('Password must be at least 8 characters long!', { variant: 'error' });
+      return;
+    }
+
     try {
       const response = await fetch('http://localhost:3001/register', {
         method: 'POST',
@@ -46,6 +56,7 @@ function LoginPage() {
       // Store the token (if provided) in localStorage
       localStorage.setItem('token', data.token);
       fetchUserData(); // Fetch user data immediately after login
+
       // Clear the form fields after submission
       setEmail('');
       setPassword('');
@@ -62,173 +73,154 @@ function LoginPage() {
   };
 
   return (
-    <Grid
-      container
-      justifyContent="space-around"
-      alignItems="center"
-      minHeight="100vh"
-      sx={{
-        backgroundColor: darkMode ? '#121212' : '#f7f4f3',
-        transition: 'background-color 0.3s',
-        padding: "10px"
-      }}
-    >
-      <Grid
-        item
-        xs={12}
-        md={4}
-        p={3}
-        sx={{
-          bgcolor: darkMode ? '#1e1e1e' : '#f7f4f3',
-          borderRadius: '10px',
-          boxShadow: darkMode ? '0px 0px 10px rgba(255, 255, 255, 0.1)' : '0px 0px 10px rgba(0, 0, 0, 0.1)',
-          color: darkMode ? '#f7f4f3' : '#000',
-        }}
-      >
-        <Typography variant="h4" align="center" mb={3}>
+    <div className={`  flex justify-around -space-x-16  py-5 bg-${darkMode ? 'black' : 'gray-100'} transition-colors duration-3000`}>
+      <div className={`  w-full max-w-md  p-6 rounded-lg shadow-md bg-${darkMode ? 'black' : 'gray-200'} text-${darkMode ? 'gray-100' : 'gray-900'}`}>
+        <Typography variant="h4" align="center" mb={2}>
           Welcome Back!
         </Typography>
-        <Typography variant="body2" align="center" mb={3}>
+        <Typography variant="body2" align="center" mb={2}>
           Enter to get unlimited access to data & information.
         </Typography>
 
         <form onSubmit={handleSubmit}>
-          <Grid container spacing={2}>
-            <Grid item xs={6}>
-              <TextField
-                label="Full Name"
-                variant="outlined"
-                fullWidth
-                required
-                value={fullName}
-                onChange={(e) => setFullName(e.target.value)}
-                InputProps={{
-                  sx: {
-                    color: darkMode ? '#fff' : '#000',
-                    '& .MuiOutlinedInput-notchedOutline': {
-                      borderColor: darkMode ? '#fff' : '#000',
-                    },
-                    '&:hover .MuiOutlinedInput-notchedOutline': {
-                      borderColor: darkMode ? '#fff' : '#000',
-                    },
+          <div className="mb-4 flex gap-3">
+            <TextField
+              label="Full Name"
+              variant="outlined"
+              fullWidth
+              required
+              value={fullName}
+              onChange={(e) => setFullName(e.target.value)}
+              InputProps={{
+                sx: {
+                  color: darkMode ? '#fff' : '#000',
+                  '& .MuiOutlinedInput-notchedOutline': {
+                    borderColor: darkMode ? '#fff' : '#000',
                   },
-                }}
-                InputLabelProps={{
-                  sx: {
-                    color: darkMode ? '#fff' : '#000',
+                  '&:hover .MuiOutlinedInput-notchedOutline': {
+                    borderColor: darkMode ? '#fff' : '#000',
                   },
-                }}
-              />
-            </Grid>
-            <Grid item xs={6}>
-              <TextField
-                label="Address"
-                variant="outlined"
-                fullWidth
-                required
-                value={address}
-                onChange={(e) => setAddress(e.target.value)}
-                InputProps={{
-                  sx: {
-                    color: darkMode ? '#fff' : '#000',
-                    '& .MuiOutlinedInput-notchedOutline': {
-                      borderColor: darkMode ? '#fff' : '#000',
-                    },
-                    '&:hover .MuiOutlinedInput-notchedOutline': {
-                      borderColor: darkMode ? '#fff' : '#000',
-                    },
-                  },
-                }}
-                InputLabelProps={{
-                  sx: {
-                    color: darkMode ? '#fff' : '#000',
-                  },
-                }}
-              />
-            </Grid>
-          </Grid>
+                },
+              }}
+              InputLabelProps={{
+                sx: {
+                  color: darkMode ? '#fff' : '#000',
+                },
+              }}
+            />
 
-          <TextField
-            label="Email"
-            variant="outlined"
-            fullWidth
-            margin="normal"
-            required
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            InputProps={{
-              sx: {
-                color: darkMode ? '#fff' : '#000',
-                '& .MuiOutlinedInput-notchedOutline': {
-                  borderColor: darkMode ? '#fff' : '#000',
+            <TextField
+              label="Address"
+              variant="outlined"
+              fullWidth
+              required
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+              InputProps={{
+                sx: {
+                  color: darkMode ? '#fff' : '#000',
+                  '& .MuiOutlinedInput-notchedOutline': {
+                    borderColor: darkMode ? '#fff' : '#000',
+                  },
+                  '&:hover .MuiOutlinedInput-notchedOutline': {
+                    borderColor: darkMode ? '#fff' : '#000',
+                  },
                 },
-                '&:hover .MuiOutlinedInput-notchedOutline': {
-                  borderColor: darkMode ? '#fff' : '#000',
+              }}
+              InputLabelProps={{
+                sx: {
+                  color: darkMode ? '#fff' : '#000',
                 },
-              },
-            }}
-            InputLabelProps={{
-              sx: {
-                color: darkMode ? '#fff' : '#000',
-              },
-            }}
-          />
+              }}
+            />
+          </div>
 
-          <TextField
-            label="Password"
-            variant="outlined"
-            fullWidth
-            margin="normal"
-            required
-            type={showPassword ? 'text' : 'password'}
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            InputProps={{
-              sx: {
-                color: darkMode ? '#fff' : '#000',
-                '& .MuiOutlinedInput-notchedOutline': {
-                  borderColor: darkMode ? '#fff' : '#000',
+          <div className="mb-4">
+            <TextField
+              label="Email"
+              variant="outlined"
+              fullWidth
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              InputProps={{
+                sx: {
+                  color: darkMode ? '#fff' : '#000',
+                  '& .MuiOutlinedInput-notchedOutline': {
+                    borderColor: darkMode ? '#fff' : '#000',
+                  },
+                  '&:hover .MuiOutlinedInput-notchedOutline': {
+                    borderColor: darkMode ? '#fff' : '#000',
+                  },
                 },
-                '&:hover .MuiOutlinedInput-notchedOutline': {
-                  borderColor: darkMode ? '#fff' : '#000',
+              }}
+              InputLabelProps={{
+                sx: {
+                  color: darkMode ? '#fff' : '#000',
                 },
-              },
-              endAdornment: (
-                <IconButton
-                  onClick={() => setShowPassword(!showPassword)}
-                  edge="end"
-                  sx={{ color: darkMode ? '#fff' : '#000' }}
-                >
-                  {showPassword ? <VisibilityOff /> : <Visibility />}
-                </IconButton>
-              ),
-            }}
-            InputLabelProps={{
-              sx: {
-                color: darkMode ? '#fff' : '#000',
-              },
-            }}
-          />
+              }}
+            />
+          </div>
+
+          <div className="mb-4">
+            <TextField
+              label="Password"
+              variant="outlined"
+              fullWidth
+              required
+              type={showPassword ? 'text' : 'password'}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              InputProps={{
+                sx: {
+                  color: darkMode ? '#fff' : '#000',
+                  '& .MuiOutlinedInput-notchedOutline': {
+                    borderColor: darkMode ? '#fff' : '#000',
+                  },
+                  '&:hover .MuiOutlinedInput-notchedOutline': {
+                    borderColor: darkMode ? '#fff' : '#000',
+                  },
+                },
+                endAdornment: (
+                  <IconButton
+                    onClick={() => setShowPassword(!showPassword)}
+                    edge="end"
+                    sx={{ color: darkMode ? '#fff' : '#000' }}
+                  >
+                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                ),
+              }}
+              InputLabelProps={{
+                sx: {
+                  color: darkMode ? '#fff' : '#000',
+                },
+              }}
+            />
+          </div>
 
           <FormControlLabel
-            control={<Checkbox />}
+            control={<Checkbox sx={{ color: darkMode ? '#fff' : '#000' }} />}
             label="Remember me"
-            sx={{ mt: 2, color: darkMode ? '#f7f4f3' : '#000' }}
+            sx={{ color: darkMode ? '#f7f4f3' : '#000' }}
           />
-          <Box textAlign="right" sx={{ mt: 2 }}>
-            <MuiLink component={Link} to="/forgot-password" variant="body2" sx={{ color: darkMode ? '#90caf9' : '#1e88e5' }}>
+
+          <div className="text-right">
+            <Typography variant="body2" component={Link} to="/forgot-password" sx={{ color: darkMode ? '#90caf9' : '#1e88e5' }}>
               Forgot your password?
-            </MuiLink>
-          </Box>
+            </Typography>
+          </div>
+<div className='flex justify-end p-2'>
 
           <Button
             type="submit"
             variant="contained"
-            fullWidth
-            sx={{ mt: 3, bgcolor: darkMode ? '#bb86fc' : '#6200ea' }}
+           color='secondary'
           >
             Log In
           </Button>
+</div>
+
           <Button
             variant="outlined"
             fullWidth
@@ -242,14 +234,17 @@ function LoginPage() {
         </form>
 
         <Typography variant="body2" align="center">
-        Don't have an account?{' '}
-        <MuiLink component={Link} to="/login" variant="body2" underline="none" sx={{ color: darkMode ? '#90caf9' : '#1e88e5' }}>
-          Register here
-        </MuiLink>
-      </Typography>
-      </Grid>
-      {!matches && <img src="./center.png" width={600} height={600} alt="" />}
-    </Grid>
+          Don't have an account?{' '}
+          <Typography component={Link} to="/login" variant="body2" underline="none" sx={{ color: darkMode ? '#90caf9' : '#1e88e5' }}>
+            Register here
+          </Typography>
+        </Typography>
+      </div>
+
+      <div className="hidden  lg:block ml-10">
+        <img src="./center.png" width={600} height={600} alt="Login illustration" />
+      </div>
+    </div>
   );
 }
 

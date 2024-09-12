@@ -1,8 +1,8 @@
 import React, { useContext, useState } from 'react';
-import { DarkModeContext , UserContext } from '../appContext'; // Import the dark mode context
+import { DarkModeContext, UserContext } from '../appContext'; // Import the dark mode context
 import { styled } from '@mui/material/styles';
 import Switch from '@mui/material/Switch';
-import { IconButton,Typography, Tooltip, Drawer, List, ListItem, ListItemText } from '@mui/material';
+import { IconButton, Typography, Tooltip, Drawer, List, ListItem, ListItemText } from '@mui/material';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import MenuIcon from '@mui/icons-material/Menu';
 import { Link } from 'react-router-dom'; // Import Link from React Router
@@ -84,10 +84,13 @@ export default function Navbar() {
   };
 
   return (
-    <nav className={`navbar ${darkMode ? 'dark-mode' : 'light-mode'}`}>
-      <div className="navbar-content" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+    <nav className={`w-full p-4 ${darkMode ? 'bg-gray-900 text-white' : 'bg-white text-gray-900'} shadow-lg`}>
+      <div className=" container flex justify-between w-[80vw] mx-auto ">
         {/* Logo */}
-        <img src="./logo.png" alt="Logo" className="navbar-logo" style={{ height: '50px' }} />
+        <div>
+
+          <img src="./logo.png" alt="Logo" className="h-12" />
+        </div>
 
         {/* Mobile Menu Icon */}
         {isMobile ? (
@@ -97,63 +100,89 @@ export default function Navbar() {
             </IconButton>
 
             {/* Drawer for mobile view */}
-            <Drawer anchor="left" open={drawerOpen} onClose={toggleDrawer(false)}>
-              <div style={drawerStyle}>
-                <List>
-                  <ListItem>
-                    {/* Dark Mode Toggle inside Drawer */}
-                    <MaterialUISwitch checked={darkMode} onChange={toggleDarkMode} />
-                    <ListItemText primary="Dark Mode" />
-                  </ListItem>
+            <Drawer
+  anchor="left"
+  open={drawerOpen}
+  onClose={toggleDrawer(false)}
+  PaperProps={{
+    sx: {
+      backgroundColor: darkMode ? '#333' : '#fff',  // Dark or light background
+      color: darkMode ? '#fff' : '#000',            // Dark or light text color
+      width: '250px',
+      height: '100%',
+    },
+  }}
+>
+  <div
+    className="w-64 p-4"
+    onClick={toggleDrawer(false)}
+    onKeyDown={toggleDrawer(false)}
+  >
+    <List>
+      <ListItem>
+        {/* Dark Mode Toggle inside Drawer */}
+        <div className="flex justify-start items-center gap-9">
+          <MaterialUISwitch checked={darkMode} onChange={toggleDarkMode} />
+          <h2>Dark Mode</h2>
+        </div>
+      </ListItem>
 
-                  {/* Conditionally render user profile if logged in */}
-                  {userDataform.fullName ? (
-                    <>
-                      <ListItem>
-                        <Typography variant="h6" sx={{ ml: 2 }} gutterBottom align="center">
-                          {capitalizeFirstLetter(userDataform.fullName)}
-                        </Typography>
-                      </ListItem>
-                      <ListItem component={Link} to="/dashboard">
-                        <Tooltip title="Profile">
-                          <IconButton color="success" aria-label="profile">
-                            <AccountCircle />
-                          </IconButton>
-                        </Tooltip>
-                      </ListItem>
-                    </>
-                  ) : (
-                    <ListItem>
-                     
-                    </ListItem>
-                  )}
-                </List>
-              </div>
-            </Drawer>
+      {/* Conditionally render user profile if logged in */}
+      {userDataform.fullName ? (
+        <>
+          <div className="flex justify-start items-center space-x-2 px-1">
+            <ListItem component={Link} to="/dashboard">
+              <Tooltip title="Profile">
+                <img
+                  className={darkMode ? 'invert' : ''}
+                  src="profileicon.gif"
+                  width={40}
+                  height={40}
+                  alt="Profile Icon"
+                />
+              </Tooltip>
+            </ListItem>
+
+            <ListItem component={Link} to="/dashboard">
+              <h2 className="whitespace-nowrap">
+                {capitalizeFirstLetter(userDataform.fullName)}
+              </h2>
+            </ListItem>
+          </div>
+        </>
+      ) : (
+        <ListItem>
+          <Typography variant="body1">Not logged in</Typography>
+        </ListItem>
+      )}
+    </List>
+  </div>
+</Drawer>
+
           </>
         ) : (
-          // Desktop view (default behavior)
-          <div style={{ display: 'flex', alignItems: 'center' }}>
+          // Desktop view
+          <div className="flex items-center gap-3">
             {/* Dark Mode Toggle */}
             <MaterialUISwitch checked={darkMode} onChange={toggleDarkMode} />
-          
-            <Typography variant="h6" sx={{ ml: 2 }} gutterBottom align="center">
-              {userDataform.fullName ? capitalizeFirstLetter(userDataform.fullName) : ''}
-            </Typography>
 
-            {/* Show Profile button only if the user is logged in */}
-            {userDataform.fullName && (
-              <Tooltip title="Profile">
-                <IconButton
-                  component={Link}
-                  to="/dashboard"
-                  color="inherit"
-                  aria-label="profile"
-                >
-                  <AccountCircle />
-                </IconButton>
-              </Tooltip>
-            )}
+            {/* Show Profile button if logged in */}
+            <div className='flex  w-[200px] items-center justify-center gap-4' >
+              <h2 className='text-xl'> {userDataform.fullName ? capitalizeFirstLetter(userDataform.fullName) : ''}</h2>
+              {userDataform.fullName && (
+                <Tooltip title="Profile">
+                  <Link to="/dashboard">
+                    <img
+                      className={darkMode ? 'invert' : ''}
+                      src="profileicon.gif"
+                      width={50}
+                      height={50}
+                      alt="Profile Icon"
+                    />
+                  </Link>
+                </Tooltip>
+              )}
+            </div>
           </div>
         )}
       </div>

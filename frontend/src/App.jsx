@@ -17,7 +17,7 @@ function App() {
 
   return (
     <Router>
-      <div className={`min-h-screen ${darkMode ? 'bg-zinc-900' : 'bg-white'}`}>
+      <div className={`min-h-screen ${darkMode ? 'bg-black' : 'bg-white'}`}>
         <Navbar />
         <Routes>
           {/* If user is authenticated, redirect from / to /dashboard */}
